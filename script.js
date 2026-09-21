@@ -57,7 +57,7 @@ flexDiv.addEventListener("click", (e) => {
   if (e.target.tagName !== "IMG") return;
   const target = e.target;
 
-  // Prevent selecting more than 2 or double-clicking the same image
+  // Prevent clicking more than 2 images or clicking the same image twice
   if (clickedImages.includes(target) || clickedImages.length >= 2) return;
 
   target.classList.add("selected");
@@ -76,7 +76,10 @@ flexDiv.addEventListener("click", (e) => {
 
 // Handle Reset click (Return to State 1)
 resetBtn.addEventListener("click", () => {
-  clickedImages.forEach((img) => img.classList.remove("selected"));
+  // Ensure 'selected' class is removed from ALL images in DOM
+  const allImages = document.querySelectorAll("img");
+  allImages.forEach((img) => img.classList.remove("selected"));
+
   clickedImages = [];
   resetBtn.style.display = "none";
   verifyBtn.style.display = "none";
@@ -89,7 +92,8 @@ verifyBtn.addEventListener("click", () => {
 
   if (
     clickedImages.length === 2 &&
-    clickedImages[0].className === clickedImages[1].className
+    clickedImages[0].className.replace("selected", "").trim() ===
+      clickedImages[1].className.replace("selected", "").trim()
   ) {
     para.textContent = "You are a human. Congratulations!";
   } else {
