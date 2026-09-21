@@ -1,9 +1,10 @@
 const main = document.querySelector("main");
 
 // 1. Heading element
+const initialHeadingText = "Please click on the identical tiles to verify that you are not a robot.";
 const h3 = document.createElement("h3");
 h3.id = "h";
-h3.textContent = "Please click on the identical tiles to verify that you are not a robot.";
+h3.textContent = initialHeadingText;
 main.appendChild(h3);
 
 // 2. Container for the images
@@ -26,7 +27,7 @@ for (let i = imagesArray.length - 1; i > 0; i--) {
 imagesArray.forEach((cls, idx) => {
   const img = document.createElement("img");
   img.className = cls;
-  img.dataset.class = cls; // Store original class for clean comparison
+  img.dataset.class = cls;
   img.dataset.index = idx;
   flexDiv.appendChild(img);
 });
@@ -84,6 +85,7 @@ resetBtn.addEventListener("click", () => {
   resetBtn.style.display = "none";
   verifyBtn.style.display = "none";
   para.textContent = "";
+  h3.textContent = initialHeadingText;
 });
 
 // Handle Verify click (State 4)
@@ -91,7 +93,6 @@ verifyBtn.addEventListener("click", () => {
   verifyBtn.style.display = "none";
 
   if (clickedImages.length === 2) {
-    // Compare the original base classes directly
     const class1 = clickedImages[0].dataset.class || Array.from(clickedImages[0].classList).find(c => c !== "selected");
     const class2 = clickedImages[1].dataset.class || Array.from(clickedImages[1].classList).find(c => c !== "selected");
 
