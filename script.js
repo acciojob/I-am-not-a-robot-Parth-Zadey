@@ -26,6 +26,7 @@ for (let i = imagesArray.length - 1; i > 0; i--) {
 imagesArray.forEach((cls, idx) => {
   const img = document.createElement("img");
   img.className = cls;
+  img.dataset.class = cls; // Store original class for clean comparison
   img.dataset.index = idx;
   flexDiv.appendChild(img);
 });
@@ -57,7 +58,7 @@ flexDiv.addEventListener("click", (e) => {
   if (e.target.tagName !== "IMG") return;
   const target = e.target;
 
-  // Prevent clicking more than 2 images or clicking the same image twice
+  // Prevent selecting more than 2 or double-clicking the same image
   if (clickedImages.includes(target) || clickedImages.length >= 2) return;
 
   target.classList.add("selected");
@@ -76,7 +77,6 @@ flexDiv.addEventListener("click", (e) => {
 
 // Handle Reset click (Return to State 1)
 resetBtn.addEventListener("click", () => {
-  // Ensure 'selected' class is removed from ALL images in DOM
   const allImages = document.querySelectorAll("img");
   allImages.forEach((img) => img.classList.remove("selected"));
 
@@ -90,14 +90,15 @@ resetBtn.addEventListener("click", () => {
 verifyBtn.addEventListener("click", () => {
   verifyBtn.style.display = "none";
 
-  if (
-    clickedImages.length === 2 &&
-    clickedImages[0].className.replace("selected", "").trim() ===
-      clickedImages[1].className.replace("selected", "").trim()
-  ) {
-    para.textContent = "You are a human. Congratulations!";
-  } else {
-    para.textContent =
-      "We can't verify you as a human. You selected the non-identical tiles.";
+  if (clickedImages.length === 2) {
+    // Compare the original base classes directly
+    const class1 = clickedImages[0].dataset.class || Array.from(clickedImages[0].classList).find(c => c !== "selected");
+    const class2 = clickedImages[1].dataset.class || Array.from(clickedImages[1].classList).find(c => c !== "selected");
+
+    if (class1 === class2) {
+      para.textContent = "You are a human. Congratulations!";
+    } else {
+      para.textContent = "We can't verify you as a human. You selected the non-identical tiles.";
+    }
   }
 });
